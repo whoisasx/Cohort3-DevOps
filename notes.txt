@@ -1,0 +1,33 @@
+* go through the notes of previous class before attending the next one.
+
+# week 24.1
+1. create a digital ocean account.
+    - using ssh key for verification.
+    - generate the ssh key on the local machine inside the .ssh folder and using 
+      the command 'ssh-keygen'.
+2. serve a demo webpage over there.
+3. access it by the public domain.
+
+#week 24.2
+1.get a GCP account and initiate a virutal machine. 
+2.replace nginx with traefic/HAproxy/apache.
+3.try deploying a react project.
+4.get a domain (namecheap). DONE
+5.try ASGs
+6.try to do certificate managaement yourself.
+7.create a ci/cd pipeline to auto deploy your server from github.
+8.forever or pm2(process management)
+
+#week 25.2
+1. create a monorepo with apps (ws, http, web) and each of them to database and push it to github.
+2.  - create 2 servers.
+    - add node, nginx to both the servers and also the pnpm.
+    - clone the monorepo to both the servers.
+    - start all three process http,ws and web.
+    - point the name to the specific servers.
+    - also deploy the staging websites. 
+    - refresh ngnix config.
+    - test everything is working.
+3. create a ci/cd pipeline.
+
+
