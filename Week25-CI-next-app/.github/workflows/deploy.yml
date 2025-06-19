@@ -1,0 +1,76 @@
+name: Turborepo CI/CD Pipeline
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: 📥 Checkout Repo
+              uses: actions/checkout@v3
+
+            - name: 🔐 Setup SSH key
+              run: |
+                  echo "${{ secrets.DEV_SSH_KEY }}" > deploy_key.pem
+                  chmod 600 deploy_key.pem
+            - name: 🚀 Deploy on Google VM
+              run: |
+                  ssh -t -o StrictHostKeyChecking=no -i deploy_key.pem ${{ secrets.DEV_VM_USERNAME }}@${{ secrets.DEV_VM_HOST }} "bash -l -i" <<'EOF'
+                    echo "🔄 Sourcing nvm..."
+                    export NVM_DIR="\$HOME/.nvm"
+                    [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
+                    echo "📦 Using default Node..."
+                    nvm use node
+                    echo "🧪 Checking Node and NPM..."
+                    echo "Node: \$(node -v || echo '❌ Not Found')"
+                    echo "NPM: \$(npm -v || echo '❌ Not Found')"
+                    if ! command -v npm &> /dev/null; then
+                      echo "📥 Installing npm..."
+                      nvm install-latest-npm
+                    fi
+                    echo "🚀 Ensuring pnpm is installed..."
+                    if ! command -v pnpm &> /dev/null; then
+                      echo "📦 Installing pnpm..."
+                      npm install -g pnpm
+                    fi
+                    echo "🔧 Ensuring git is installed..."
+                    if ! command -v git &> /dev/null; then
+                      echo "📦 Installing git..."
+                      sudo apt update && sudo apt install -y git
+                    fi
+                    echo "🧰 Ensuring pm2 is installed..."
+                    if ! command -v pm2 &> /dev/null; then
+                      echo "📦 Installing pm2..."
+                      npm install -g pm2
+                    fi
+                    echo "📁 Navigating to project directory..."
+                    cd /home/${{ secrets.DEV_VM_USERNAME }}/desktop/Week25-CI
+                    echo "🔄 Resetting repo to match remote main..."
+                    git fetch origin main
+                    git reset --hard origin/main
+                    echo "📦 Installing dependencies..."
+                    pnpm install
+                    echo "🔐 Setting up DB environment..."
+                    cp /home/${{ secrets.DEV_VM_USERNAME }}/.env ./packages/db/.env
+                    echo "🛠️ Generating Prisma client..."
+                    pnpm -F db exec pnpx prisma generate --schema=prisma/schema.prisma
+                    echo "🧱 Building DB package..."
+                    pnpm --filter db build
+                    echo "🏗️ Building all apps..."
+                    pnpm build
+                    echo "🧹 Removing old PM2 processes (if any)..."
+                    pm2 delete web-app || true
+                    pm2 delete http-server || true
+                    pm2 delete ws-server || true
+                    echo "🚀 Starting apps using PM2..."
+                    pm2 start "pnpm --filter web start" --name web-app
+                    [ -f apps/http-server/dist/index.js ] && pm2 start apps/http-server/dist/index.js --name http-server || echo "❌ http-server entry not found"
+                    [ -f apps/ws-server/dist/index.js ] && pm2 start apps/ws-server/dist/index.js --name ws-server || echo "❌ ws-server entry not found"
+                    echo "💾 Saving PM2 process list for restart on reboot..."
+                    pm2 save
+                    echo "✅ Deployment complete!"
+                    exit 0
+                    EOF

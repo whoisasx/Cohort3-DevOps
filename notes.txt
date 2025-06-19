@@ -30,4 +30,8 @@
     - test everything is working.
 3. create a ci/cd pipeline.
 
-
+{
+    whenever we open a terminal anywhere, it automatically source the shell files like (.bashrc,zshrc etc.) but only in the interactive shell. so if we manually ssh into the virtual machine(vm) the shell is interactive and hence the shell files are sourced and we get desired access to the nvm , node , npm and all if they are already installed.
+    but in case of github, when github server ssh into the vm , its shell is non-interactive and hence no shell files are sourced and hence no access to anything like node,nvm or npm.
+    it will display:[Pseudo-terminal will not be allocated because stdin is not a terminal.]
+}
