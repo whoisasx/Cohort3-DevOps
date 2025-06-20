@@ -65,3 +65,10 @@
     - always try to use cached layer from previous build if it's not dependent or unchanged.
 2. volumes in docker.
 3. networks in docker.
+
+--------------------------------------------------------------------------------------------
+
+#week 27.1
+1. docker-compose 
+2. create a monorepo, and write CI/CD pipeline to deploy it.
+Task: monorepo deployment to VM via CI/CD using docker.
