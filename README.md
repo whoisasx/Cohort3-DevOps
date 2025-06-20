@@ -63,3 +63,21 @@
 5. Create a Docker image locally:
     - Build and run a container of the image.
     - Push it on Docker Hub and remove it from the local machine, then run it again to pull it locally.
+
+---
+
+## Week 26.2
+
+1. Layers in Docker.
+    - Caching and optimizing the cached layers to optimize the build process.
+    - Always try to use cached layers from previous builds if they're not dependent or unchanged.
+2. Volumes in Docker.
+3. Networks in Docker.
+
+---
+
+## Week 27.1
+
+1. Docker Compose.
+2. Create a monorepo, and write a CI/CD pipeline to deploy it.
+    - Task: Monorepo deployment to VM via CI/CD using Docker.
