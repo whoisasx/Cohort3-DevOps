@@ -18,7 +18,7 @@
 7.create a ci/cd pipeline to auto deploy your server from github.
 8.forever or pm2(process management)
 
------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 
 #week 25.2
 1. create a monorepo with apps (ws, http, web) and each of them to database and push it to github.
@@ -40,7 +40,7 @@
         even though you manually include the command to source nvm in the deployment file, it still misses the path where all the commands are stored of node and all.
     }
 
------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
 
 #week 26.1
 1. install docker Desktop and sign up.
@@ -58,3 +58,10 @@
 5. create a docker image locally.
     -build and run a container of the image.
     -push it on docker and remove it from local machine and then run it again to pull it locally.
+
+#week 26.2
+1. layers in docker.
+    - caching and optimising the cached layers to optimise the build process.
+    - always try to use cached layer from previous build if it's not dependent or unchanged.
+2. volumes in docker.
+3. networks in docker.
