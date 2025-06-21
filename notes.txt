@@ -72,3 +72,7 @@
 1. docker-compose 
 2. create a monorepo, and write CI/CD pipeline to deploy it.
 Task: monorepo deployment to VM via CI/CD using docker.
+
+-----------------------------------------------------------------------
+#week 27.2
+Task: deploying a monorepo to VM using docker.
