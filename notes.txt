@@ -75,20 +75,47 @@ Task: monorepo deployment to VM via CI/CD using docker.
 
 -----------------------------------------------------------------------
 #week 27.2
-Task: deploying a monorepo to VM using docker.
-1. use bun as a package manager.
-    -got the clarity of SSG,CSR,SSR,ISR.
-    -also what is the edge environment and not the edge.
-    {
-        in nextjs app router, be default every page is ssg at build time. but nextjs filters 
-        the pages and decide which one to do static site generation and not.suppose a page is 
-        ssg page and it is making a call to the database then at build time you need to connect 
-        it database. so it becomes important to provide database url at the build time unlike in
-        websocket and http servers where at build time you don't have to call to the database rather
-        only have to generate the client and you only make a call to the database in the run time.
-            - solution to this problem is BUILD ARG (build arguments)
-    }
-2. create a simple monorepo with http-server, ws-server and web app.
-3. write the dockerfile for all of the app.
-4. do docker compose
-5. write a ci/cd pipeline to push the image to docker and run it on vm.
+Task: Deploying a monorepo to a VM using Docker and CI/CD
+
+1. Use Bun as a package manager for all apps in the monorepo.
+   - Understand SSG, CSR, SSR, ISR in Next.js.
+   - Clarify the difference between edge and non-edge environments.
+   - Note: In Next.js App Router, by default every page is SSG at build time. Next.js decides which pages to statically generate. If a page uses SSG and fetches data from a database, the database connection is needed at build time. This is why you must provide the database URL as a build argument (BUILD ARG) for web apps. For HTTP and WebSocket servers, database access is only needed at runtime, not build time.
+
+2. Create a simple monorepo structure:
+   - apps/
+     - http-server
+     - ws-server
+     - web (Next.js)
+   - packages/
+     - db (Prisma, shared types, etc.)
+     - ui (shared UI components)
+
+3. Write a Dockerfile for each app:
+   - Use multi-stage builds for smaller images.
+   - For web (Next.js):
+     - Use `ARG` for `DATABASE_URL` at build time for SSG.
+     - Use `ENV` or `env_file` for runtime variables.
+   - For http-server and ws-server:
+     - Only set `DATABASE_URL` as an environment variable for runtime.
+
+4. Write a `docker-compose.yml`:
+   - Define services for each app and the database (e.g., Postgres).
+   - Use `env_file` for runtime secrets/configs.
+   - Use build `args` for web app build-time variables.
+   - Use named volumes for database persistence.
+   - Example:
+     - `DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres`
+     - `POSTGRES_PASSWORD` in root `.env` for the database container.
+
+5. Write a CI/CD pipeline:
+   - Build and push Docker images to a registry (e.g., Docker Hub).
+   - SSH into the VM and pull the latest images.
+   - Use `docker-compose` to start/restart the services.
+   - Automate the process using GitHub Actions or another CI/CD tool.
+
+6. (Optional) Add health checks, logging, and monitoring for production readiness.
+
+---
+
+This structure ensures clear separation of build-time and runtime configs, secure handling of secrets, and a repeatable deployment process for your monorepo.
