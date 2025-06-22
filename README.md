@@ -89,44 +89,83 @@
 **Task:** Deploying a monorepo to a VM using Docker and CI/CD
 
 1. **Use Bun as a package manager for all apps in the monorepo.**
-   - Understand SSG, CSR, SSR, ISR in Next.js.
-   - Clarify the difference between edge and non-edge environments.
-   - Note: In Next.js App Router, by default every page is SSG at build time. Next.js decides which pages to statically generate. If a page uses SSG and fetches data from a database, the database connection is needed at build time. This is why you must provide the database URL as a build argument (BUILD ARG) for web apps. For HTTP and WebSocket servers, database access is only needed at runtime, not build time.
+
+    - Understand SSG, CSR, SSR, ISR in Next.js.
+    - Clarify the difference between edge and non-edge environments.
+    - Note: In Next.js App Router, by default every page is SSG at build time. Next.js decides which pages to statically generate. If a page uses SSG and fetches data from a database, the database connection is needed at build time. This is why you must provide the database URL as a build argument (BUILD ARG) for web apps. For HTTP and WebSocket servers, database access is only needed at runtime, not build time.
 
 2. **Create a simple monorepo structure:**
-   - `apps/`
-     - `http-server`
-     - `ws-server`
-     - `web` (Next.js)
-   - `packages/`
-     - `db` (Prisma, shared types, etc.)
-     - `ui` (shared UI components)
+
+    - `apps/`
+        - `http-server`
+        - `ws-server`
+        - `web` (Next.js)
+    - `packages/`
+        - `db` (Prisma, shared types, etc.)
+        - `ui` (shared UI components)
 
 3. **Write a Dockerfile for each app:**
-   - Use multi-stage builds for smaller images.
-   - For web (Next.js):
-     - Use `ARG` for `DATABASE_URL` at build time for SSG.
-     - Use `ENV` or `env_file` for runtime variables.
-   - For http-server and ws-server:
-     - Only set `DATABASE_URL` as an environment variable for runtime.
+
+    - Use multi-stage builds for smaller images.
+    - For web (Next.js):
+        - Use `ARG` for `DATABASE_URL` at build time for SSG.
+        - Use `ENV` or `env_file` for runtime variables.
+    - For http-server and ws-server:
+        - Only set `DATABASE_URL` as an environment variable for runtime.
 
 4. **Write a `docker-compose.yml`:**
-   - Define services for each app and the database (e.g., Postgres).
-   - Use `env_file` for runtime secrets/configs.
-   - Use build `args` for web app build-time variables.
-   - Use named volumes for database persistence.
-   - Example:
-     - `DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres`
-     - `POSTGRES_PASSWORD` in root `.env` for the database container.
+
+    - Define services for each app and the database (e.g., Postgres).
+    - Use `env_file` for runtime secrets/configs.
+    - Use build `args` for web app build-time variables.
+    - Use named volumes for database persistence.
+    - Example:
+        - `DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres`
+        - `POSTGRES_PASSWORD` in root `.env` for the database container.
 
 5. **Write a CI/CD pipeline:**
-   - Build and push Docker images to a registry (e.g., Docker Hub).
-   - SSH into the VM and pull the latest images.
-   - Use `docker-compose` to start/restart the services.
-   - Automate the process using GitHub Actions or another CI/CD tool.
+
+    - Build and push Docker images to a registry (e.g., Docker Hub).
+    - SSH into the VM and pull the latest images.
+    - Use `docker-compose` to start/restart the services.
+    - Automate the process using GitHub Actions or another CI/CD tool.
 
 6. **(Optional)** Add health checks, logging, and monitoring for production readiness.
 
 ---
 
 This structure ensures clear separation of build-time and runtime configs, secure handling of secrets, and a repeatable deployment process for your monorepo.
+
+---
+
+## Week 28.1
+
+**Topic: Horizontal and Vertical Scaling**
+
+1. **Horizontal Scaling (Scaling Out):**
+
+    - Increase system capacity by adding more machines/instances.
+    - Each instance runs a copy of the app, distributing the load.
+    - Common in cloud: add more VMs, containers, pods.
+    - Load balancers distribute traffic across instances.
+
+2. **Vertical Scaling (Scaling Up):**
+
+    - Increase resources (CPU, RAM, etc.) of a single machine.
+    - The app runs on a more powerful server.
+    - Limited by hardware max capacity; can get expensive.
+
+3. **Process Clustering:**
+
+    - Run multiple Node.js processes (using cluster module) to use all CPU cores.
+    - In development, browsers may cache the process ID and send requests to the same process, so local load balancing may not be fully effective.
+
+4. **Stateless vs Stateful Server Autoscaling:**
+
+    - Stateless servers: No local user/session data. Any instance can handle any request. Easy to scale horizontally.
+    - Stateful servers: Store session/user data locally. Scaling is harder—must route requests to the correct instance or share state (e.g., Redis for sessions).
+
+5. **Best Practices:**
+    - Design apps to be stateless for easier scaling and reliability.
+    - Use external storage (databases, caches) for stateful data.
+    - Implement health checks and monitoring for autoscaling.
