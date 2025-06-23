@@ -150,3 +150,23 @@ Topic: Horizontal and Vertical Scaling
     - Implement health checks and monitoring for autoscaling.
 
 ---------------------------------------------------------------------------------------------
+
+#week 28.2
+Steps to Create an Auto Scaling Group (ASG) in AWS:
+
+1. Go to the EC2 Dashboard in AWS Console.
+2. In the left menu, click on "Auto Scaling Groups".
+3. Click "Create Auto Scaling group".
+4. Enter a name for your ASG.
+5. Select a Launch Template or create a new one (defines AMI, instance type, key pair, security groups, etc.).
+6. Choose the VPC and subnets for your instances.
+7. Configure group size and scaling policies:
+    - Set minimum, desired, and maximum number of instances.
+    - Add scaling policies (e.g., target tracking, step scaling, scheduled actions).
+8. (Optional) Attach a load balancer (Application/Network Load Balancer) for distributing traffic.
+9. Configure notifications and tags as needed.
+10. Review all settings and click "Create Auto Scaling group".
+
+Your ASG will now automatically manage EC2 instances based on your scaling policies!
+
+---------------------------------------------------------------------------------------------
