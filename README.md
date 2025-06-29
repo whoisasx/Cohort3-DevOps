@@ -190,3 +190,40 @@ This structure ensures clear separation of build-time and runtime configs, secur
 10. Review all settings and click "Create Auto Scaling group".
 
 Your ASG will now automatically manage EC2 instances based on your scaling policies!
+
+---
+
+## Week 29 - Cloud-based IDE Platform with Auto Scaling
+
+**Goal:** Build a scalable, production-ready cloud-based VS Code platform using AWS EC2, Auto Scaling Groups (ASG), and programmatic instance management.
+
+### Phase 1: Base Cloud IDE Instance
+- Launch Ubuntu EC2, open ports for SSH (22), VS Code server (8080), HTTP/HTTPS (80/443).
+- Install: nginx, nodejs, npm, docker, git, code-server.
+- Configure code-server and Nginx (SSL, reverse proxy).
+- Harden security and firewall.
+- Create a custom AMI for reuse.
+
+### Phase 2: Launch Template & ASG
+- Create a Launch Template from the AMI, add user data for auto-start and instance info.
+- Create an Auto Scaling Group (ASG) with min/max/desired capacity, scaling policies, and (optionally) a load balancer.
+
+### Phase 3: Programmatic ASG Management
+- Create an IAM user with permissions for ASG and EC2 management.
+- Store credentials securely.
+- Build a Node.js API (Express, AWS SDK) to:
+  - Scale ASG up/down
+  - List and check instance health/status
+  - Expose endpoints for user requests (request/release/check instance)
+
+### Phase 4: User-Facing API & Features
+- REST endpoints for requesting, releasing, and listing IDE instances.
+- Add session management, authentication, usage monitoring, and persistent storage (e.g., S3).
+
+### Phase 5: Monitoring, Security, and Optimization
+- Integrate CloudWatch for metrics, alarms, and dashboards.
+- Implement cost optimization (scheduled scaling, spot instances, hibernation).
+- Harden security: private subnets, Systems Manager, encryption, logging.
+- Test: load, disaster recovery, performance, user experience.
+
+> This approach delivers a robust, scalable, and secure cloud IDE platform with automated scaling, monitoring, and cost controls.
