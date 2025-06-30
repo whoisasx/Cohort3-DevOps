@@ -198,32 +198,129 @@ Your ASG will now automatically manage EC2 instances based on your scaling polic
 **Goal:** Build a scalable, production-ready cloud-based VS Code platform using AWS EC2, Auto Scaling Groups (ASG), and programmatic instance management.
 
 ### Phase 1: Base Cloud IDE Instance
-- Launch Ubuntu EC2, open ports for SSH (22), VS Code server (8080), HTTP/HTTPS (80/443).
-- Install: nginx, nodejs, npm, docker, git, code-server.
-- Configure code-server and Nginx (SSL, reverse proxy).
-- Harden security and firewall.
-- Create a custom AMI for reuse.
+
+-   Launch Ubuntu EC2, open ports for SSH (22), VS Code server (8080), HTTP/HTTPS (80/443).
+-   Install: nginx, nodejs, npm, docker, git, code-server.
+-   Configure code-server and Nginx (SSL, reverse proxy).
+-   Harden security and firewall.
+-   Create a custom AMI for reuse.
 
 ### Phase 2: Launch Template & ASG
-- Create a Launch Template from the AMI, add user data for auto-start and instance info.
-- Create an Auto Scaling Group (ASG) with min/max/desired capacity, scaling policies, and (optionally) a load balancer.
+
+-   Create a Launch Template from the AMI, add user data for auto-start and instance info.
+-   Create an Auto Scaling Group (ASG) with min/max/desired capacity, scaling policies, and (optionally) a load balancer.
 
 ### Phase 3: Programmatic ASG Management
-- Create an IAM user with permissions for ASG and EC2 management.
-- Store credentials securely.
-- Build a Node.js API (Express, AWS SDK) to:
-  - Scale ASG up/down
-  - List and check instance health/status
-  - Expose endpoints for user requests (request/release/check instance)
+
+-   Create an IAM user with permissions for ASG and EC2 management.
+-   Store credentials securely.
+-   Build a Node.js API (Express, AWS SDK) to:
+    -   Scale ASG up/down
+    -   List and check instance health/status
+    -   Expose endpoints for user requests (request/release/check instance)
 
 ### Phase 4: User-Facing API & Features
-- REST endpoints for requesting, releasing, and listing IDE instances.
-- Add session management, authentication, usage monitoring, and persistent storage (e.g., S3).
+
+-   REST endpoints for requesting, releasing, and listing IDE instances.
+-   Add session management, authentication, usage monitoring, and persistent storage (e.g., S3).
 
 ### Phase 5: Monitoring, Security, and Optimization
-- Integrate CloudWatch for metrics, alarms, and dashboards.
-- Implement cost optimization (scheduled scaling, spot instances, hibernation).
-- Harden security: private subnets, Systems Manager, encryption, logging.
-- Test: load, disaster recovery, performance, user experience.
+
+-   Integrate CloudWatch for metrics, alarms, and dashboards.
+-   Implement cost optimization (scheduled scaling, spot instances, hibernation).
+-   Harden security: private subnets, Systems Manager, encryption, logging.
+-   Test: load, disaster recovery, performance, user experience.
 
 > This approach delivers a robust, scalable, and secure cloud IDE platform with automated scaling, monitoring, and cost controls.
+
+---
+
+## Week 30.1 – ECR, ECS & Container Orchestration
+
+1. **AWS CLI Setup**
+
+    - Install or update the AWS CLI to ensure you can run `aws` commands in your terminal.
+    - Configure your CLI with `aws configure` (set up access key, secret, region, and output format).
+
+2. **IAM User for ECR**
+
+    - In AWS IAM, create a user with permissions limited to ECR (Amazon Elastic Container Registry) actions.
+    - Attach a policy like `AmazonEC2ContainerRegistryFullAccess` or a custom policy with only required permissions.
+
+3. **Access Keys**
+
+    - Generate an Access Key ID and Secret Access Key for the IAM user.
+    - Use these credentials to log in via the AWS CLI.
+
+4. **Push Docker Images to ECR**
+
+    - Create a new ECR repository in the AWS Console.
+    - Authenticate Docker to your ECR registry:
+        ```bash
+        aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
+        ```
+    - Build your Docker image and tag it for ECR:
+        ```bash
+        docker build -t my-app .
+        docker tag my-app:latest <account-id>.dkr.ecr.<region>.amazonaws.com/my-app:latest
+        ```
+    - Push the image:
+        ```bash
+        docker push <account-id>.dkr.ecr.<region>.amazonaws.com/my-app:latest
+        ```
+
+5. **ECS: Elastic Container Service**
+
+    - **Architecture Overview:** Understand ECS components: Clusters, Task Definitions, Services, and Tasks.
+    - **Cluster Creation:** Create an ECS cluster (EC2 or Fargate launch type).
+    - **Task Definition:** Define your container specs (image, CPU, memory, ports, env vars).
+    - **Service Creation:** Deploy a service in your cluster to run and maintain the desired number of tasks.
+    - **Autoscaling:** Set up autoscaling policies based on CPU/memory usage or custom CloudWatch metrics.
+
+    **Best Practices:**
+
+    - Use IAM roles for ECS tasks for secure access to AWS resources.
+    - Store secrets in AWS Secrets Manager or SSM Parameter Store.
+    - Enable logging with AWS CloudWatch for observability.
+
+---
+
+## Week 30.2 – Monitoring, Logging & New Relic
+
+1. **New Relic Integration**
+
+    - Sign up for a New Relic account.
+    - Install the New Relic agent in your application (Node.js, Python, etc.).
+    - Configure the agent with your New Relic license key.
+    - Use New Relic dashboards to monitor application performance, errors, and throughput.
+
+2. **Winston Logger (Node.js)**
+
+    - Install Winston:
+        ```bash
+        npm install winston
+        ```
+    - Set up a logger in your app:
+        ```js
+        const winston = require("winston");
+        const logger = winston.createLogger({
+        	level: "info",
+        	format: winston.format.json(),
+        	transports: [
+        		new winston.transports.Console(),
+        		new winston.transports.File({ filename: "app.log" }),
+        	],
+        });
+        ```
+    - Use the logger for structured logging:
+        ```js
+        logger.info("Server started");
+        logger.error("Something went wrong", { error });
+        ```
+
+3. **Additional Monitoring & Logging Tips**
+    - Forward logs to CloudWatch or a centralized log management system.
+    - Set up alerts for error rates, latency, and resource usage.
+    - Use distributed tracing (e.g., OpenTelemetry) for end-to-end visibility.
+
+---

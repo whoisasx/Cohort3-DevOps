@@ -336,3 +336,87 @@ Topic: Building a scalable cloud-based VS Code platform using AWS EC2, Auto Scal
 - User experience testing across different instance types
 
 This enhanced approach provides a production-ready, scalable cloud IDE platform with proper monitoring, security, and cost optimization.
+
+--------------------------------------------------------------------
+
+#week 30.1 – ECR, ECS & Container Orchestration
+
+**1. AWS CLI Setup**
+   - Install or update the AWS CLI to ensure you can run `aws` commands in your terminal.
+   - Configure your CLI with `aws configure` (set up access key, secret, region, and output format).
+
+**2. IAM User for ECR**
+   - In AWS IAM, create a user with permissions limited to ECR (Amazon Elastic Container Registry) actions.
+   - Attach a policy like `AmazonEC2ContainerRegistryFullAccess` or a custom policy with only required permissions.
+
+**3. Access Keys**
+   - Generate an Access Key ID and Secret Access Key for the IAM user.
+   - Use these credentials to log in via the AWS CLI.
+
+**4. Push Docker Images to ECR**
+   - Create a new ECR repository in the AWS Console.
+   - Authenticate Docker to your ECR registry:
+     ```bash
+     aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
+     ```
+   - Build your Docker image and tag it for ECR:
+     ```bash
+     docker build -t my-app .
+     docker tag my-app:latest <account-id>.dkr.ecr.<region>.amazonaws.com/my-app:latest
+     ```
+   - Push the image:
+     ```bash
+     docker push <account-id>.dkr.ecr.<region>.amazonaws.com/my-app:latest
+     ```
+
+**5. ECS: Elastic Container Service**
+   - **Architecture Overview:** Understand ECS components: Clusters, Task Definitions, Services, and Tasks.
+   - **Cluster Creation:** Create an ECS cluster (EC2 or Fargate launch type).
+   - **Task Definition:** Define your container specs (image, CPU, memory, ports, env vars).
+   - **Service Creation:** Deploy a service in your cluster to run and maintain the desired number of tasks.
+   - **Autoscaling:** Set up autoscaling policies based on CPU/memory usage or custom CloudWatch metrics.
+
+**Best Practices:**
+   - Use IAM roles for ECS tasks for secure access to AWS resources.
+   - Store secrets in AWS Secrets Manager or SSM Parameter Store.
+   - Enable logging with AWS CloudWatch for observability.
+
+---
+
+#week 30.2 – Monitoring, Logging & New Relic
+
+**1. New Relic Integration**
+   - Sign up for a New Relic account.
+   - Install the New Relic agent in your application (Node.js, Python, etc.).
+   - Configure the agent with your New Relic license key.
+   - Use New Relic dashboards to monitor application performance, errors, and throughput.
+
+**2. Winston Logger (Node.js)**
+   - Install Winston:
+     ```bash
+     npm install winston
+     ```
+   - Set up a logger in your app:
+     ```js
+     const winston = require('winston');
+     const logger = winston.createLogger({
+       level: 'info',
+       format: winston.format.json(),
+       transports: [
+         new winston.transports.Console(),
+         new winston.transports.File({ filename: 'app.log' })
+       ]
+     });
+     ```
+   - Use the logger for structured logging:
+     ```js
+     logger.info('Server started');
+     logger.error('Something went wrong', { error });
+     ```
+
+**3. Additional Monitoring & Logging Tips**
+   - Forward logs to CloudWatch or a centralized log management system.
+   - Set up alerts for error rates, latency, and resource usage.
+   - Use distributed tracing (e.g., OpenTelemetry) for end-to-end visibility.
+
+---
