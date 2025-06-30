@@ -324,3 +324,33 @@ Your ASG will now automatically manage EC2 instances based on your scaling polic
     - Use distributed tracing (e.g., OpenTelemetry) for end-to-end visibility.
 
 ---
+
+## Week 31 – Prometheus Metrics in Node.js
+
+1. **Prometheus Metrics Integration**
+
+    - Integrated Prometheus metrics in the Node.js (Express) app using the `prom-client` library.
+    - Exposed a `/metrics` endpoint to allow Prometheus to scrape application metrics.
+
+2. **Custom Metrics Implemented**
+
+    - **Request Counter:** Tracks total number of HTTP requests, labeled by method, route, and status code.
+    - **Request Duration Histogram:** Measures duration of HTTP requests in milliseconds, labeled by method, route, and status code.
+    - **Active Requests Gauge:** Tracks the number of active HTTP requests being processed.
+
+3. **Metrics Middleware**
+
+    - Middleware increments active requests on each incoming request (except `/metrics`).
+    - On response finish, updates request counter, observes request duration, and decrements active requests.
+
+4. **Example Endpoints**
+
+    - `/user` (GET/POST): Simulates user data fetch and creation.
+    - `/cpu`: Simulates a CPU-intensive operation.
+    - `/metrics`: Exposes all collected metrics in Prometheus format.
+
+5. **Next Steps**
+    - Configure Prometheus server to scrape the `/metrics` endpoint.
+    - Visualize and alert on metrics in future sessions.
+
+---
