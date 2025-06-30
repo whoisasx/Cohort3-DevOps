@@ -354,3 +354,30 @@ Your ASG will now automatically manage EC2 instances based on your scaling polic
     - Visualize and alert on metrics in future sessions.
 
 ---
+
+## Week 32 – Prometheus & Grafana
+
+1. Running Prometheus with your Node app:
+    - Starting only the Prometheus container will not work, as there is no process running on port 3000 inside the Prometheus container.
+    - Solution: Use Docker Compose to run both Prometheus and your Node.js app on the same Docker network. This allows Prometheus to scrape metrics from your app.
+    - Once both containers are running, open http://localhost:9090 to access the Prometheus UI.
+
+2. Querying metrics in Prometheus:
+    - Use the Prometheus UI to write and test queries (PromQL) against your collected metrics.
+    - Example queries:
+        - http_requests_total (total HTTP requests)
+        - up (status of monitored targets)
+
+3. Visualizing metrics with Prometheus graphs:
+    - Prometheus UI provides basic graphing for quick metric visualization.
+    - For more advanced dashboards, use Grafana.
+
+4. Grafana for better visualization:
+    - Add a Grafana service to your docker-compose.yml file.
+    - Start Grafana and open http://localhost:3001 in your browser.
+    - In Grafana, add Prometheus as a data source (URL: http://prometheus:9090 if using Docker Compose).
+    - Create dashboards and panels to visualize your Node.js metrics.
+
+5. Alerting in Grafana:
+    - Set up alert rules in Grafana to notify you of issues (like high error rates or latency spikes).
+    - Configure notification channels (email, Slack, etc.) for alerts.

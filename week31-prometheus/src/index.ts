@@ -9,7 +9,6 @@ app.use(metricsMiddleware);
 app.use(express.json());
 
 app.get("/user", async (req: Request, res: Response) => {
-	await new Promise((resolve) => setTimeout(resolve, 1000));
 	res.send({
 		name: "adil",
 		age: 21,
@@ -25,7 +24,9 @@ app.post("/user", (req: Request, res: Response) => {
 });
 
 app.get("/cpu", async (req, res) => {
-	await new Promise((resolve) => setTimeout(resolve, 5000));
+	await new Promise((resolve) =>
+		setTimeout(resolve, Math.floor(Math.random() * 1000))
+	);
 	for (let i = 0; i < 10000000; i++) {}
 	res.json({
 		message: "cpu",
