@@ -527,3 +527,49 @@ This enhanced approach provides a production-ready, scalable cloud IDE platform 
    - Deploy and test the CRUD API on Cloudflare Workers.
 
 ------------------------------------------------------------------------------------------
+
+#week 34 - Kubernetes
+
+1. Kubernetes Service Overview
+   - A Service in Kubernetes exposes a set of Pods as a network service.
+   - Services provide stable networking and load balancing for Pods, which may have dynamic IPs.
+   - Services decouple network access from Pod lifecycle.
+
+2. Types of Services
+   - ClusterIP (default): Exposes the service on an internal IP in the cluster. Accessible only within the cluster.
+   - NodePort: Exposes the service on each Node’s IP at a static port. Accessible from outside the cluster using <NodeIP>:<NodePort>.
+   - LoadBalancer: Provisions an external load balancer (cloud provider required). Exposes the service externally using a cloud provider’s load balancer.
+   - ExternalName: Maps the service to a DNS name (useful for external resources).
+
+3. Basic Service YAML Example
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+
+4. How Services Work
+   - Use label selectors to match Pods.
+   - Provide a single DNS name for a set of Pods.
+   - Enable load balancing across matched Pods.
+
+5. Best Practices
+   - Use Services to expose your app instead of accessing Pods directly.
+   - Use labels and selectors consistently for easy management.
+   - For local development, use kubectl port-forward or NodePort.
+   - For production, prefer LoadBalancer or Ingress for HTTP apps.
+
+6. Hands-on
+   - All YAML manifests and practicals are in the week34-kubernetes/ folder in your repo.
+   - Refer to this folder for deployment, service, and other resource examples.
+
+------------------------------------------------------------------------------------------
+
+#week 35 -
