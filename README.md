@@ -358,21 +358,25 @@ Your ASG will now automatically manage EC2 instances based on your scaling polic
 ## Week 32 – Prometheus & Grafana
 
 1. Running Prometheus with your Node app:
+
     - Starting only the Prometheus container will not work, as there is no process running on port 3000 inside the Prometheus container.
     - Solution: Use Docker Compose to run both Prometheus and your Node.js app on the same Docker network. This allows Prometheus to scrape metrics from your app.
     - Once both containers are running, open http://localhost:9090 to access the Prometheus UI.
 
 2. Querying metrics in Prometheus:
+
     - Use the Prometheus UI to write and test queries (PromQL) against your collected metrics.
     - Example queries:
         - http_requests_total (total HTTP requests)
         - up (status of monitored targets)
 
 3. Visualizing metrics with Prometheus graphs:
+
     - Prometheus UI provides basic graphing for quick metric visualization.
     - For more advanced dashboards, use Grafana.
 
 4. Grafana for better visualization:
+
     - Add a Grafana service to your docker-compose.yml file.
     - Start Grafana and open http://localhost:3001 in your browser.
     - In Grafana, add Prometheus as a data source (URL: http://prometheus:9090 if using Docker Compose).
@@ -381,3 +385,64 @@ Your ASG will now automatically manage EC2 instances based on your scaling polic
 5. Alerting in Grafana:
     - Set up alert rules in Grafana to notify you of issues (like high error rates or latency spikes).
     - Configure notification channels (email, Slack, etc.) for alerts.
+
+---
+
+## Week 33.1 – Serverless
+
+1. **Introduction to Serverless Backends**
+
+    - Overview of serverless architecture and its benefits (scalability, cost, no server management).
+    - Popular serverless providers: AWS Lambda, Google Cloud Functions, Azure Functions, Cloudflare Workers, Vercel, Netlify.
+
+2. **Cloudflare Workers Setup**
+
+    - Install the Wrangler CLI:  
+      `npm install -g wrangler`
+    - Authenticate and configure your Cloudflare account.
+    - Initialize a new worker project:  
+      `wrangler init my-worker`
+    - Project structure and configuration files explained.
+
+3. **How Cloudflare Workers Work**
+
+    - Edge computing: Workers run at Cloudflare’s edge locations, close to users.
+    - Event-driven: Each request triggers a lightweight JavaScript/TypeScript function.
+    - No cold starts, fast response times, limited runtime environment.
+
+4. **Initializing and Deploying a Worker**
+
+    - Write a simple handler (e.g., return "Hello World" or echo request).
+    - Test locally with `wrangler dev`.
+    - Deploy to Cloudflare with `wrangler publish`.
+    - Access your worker at the provided URL.
+
+5. **Hono as an Express Alternative for Backends**
+
+    - Introduction to Hono: a fast, lightweight web framework for Cloudflare Workers and other edge runtimes.
+    - Install Hono:  
+      `npm install hono`
+    - Basic usage: define routes, handle requests, return responses.
+
+6. **Middlewares in Hono**
+
+    - How to use and write middlewares (e.g., logging, authentication, CORS).
+    - Example: Add a middleware to log incoming requests.
+
+7. **Database Connections in Serverless**
+
+    - The problem: Traditional database connections (e.g., with Prisma) don’t work well in serverless due to connection limits and statelessness.
+    - Solution: Use connection pooling and serverless-optimized database adapters.
+    - **Prisma Accelerate:**
+        - What it is: A service to enable efficient connection pooling for Prisma in serverless environments.
+        - How to set up:
+            - Enable Prisma Accelerate in your project.
+            - Update your Prisma connection string to use Accelerate.
+        - Benefits: Reduced connection overhead, better scalability.
+
+8. **Building a Basic Todo CRUD App with Hono**
+    - Set up routes for creating, reading, updating, and deleting todos.
+    - Use a serverless-compatible database (e.g., D1, PlanetScale, Neon, or KV).
+    - Deploy and test the CRUD API on Cloudflare Workers.
+
+---
