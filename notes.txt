@@ -572,4 +572,4 @@ spec:
 
 ------------------------------------------------------------------------------------------
 
-#week 35 -
+#week 35 - Kubernetes: Namespace, Ingress, ConfigMaps, Secrets
