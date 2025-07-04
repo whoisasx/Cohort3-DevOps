@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: backend-deployment
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: backend
+    template:
+        metadata:
+            labels:
+                app: backend
+        spec:
+            containers:
+                - name: backend
+                  image: whoisasx/week36-backend:2
+                  ports:
+                      - containerPort: 3000
+                  volumeMounts:
+                      - name: env-file
+                        readOnly: true
+                        mountPath: "/app/secret"
+            volumes:
+                - name: env-file
+                  secret:
+                      secretName: backend-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: backend-service
+spec:
+    selector:
+        app: backend
+    ports:
+        - protocol: TCP
+          port: 3000
+          targetPort: 3000
+    type: ClusterIP

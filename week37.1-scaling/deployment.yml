@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cpu-deployment
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: cpu-app
+    template:
+        metadata:
+            labels:
+                app: cpu-app
+        spec:
+            containers:
+                - name: cpu-app
+                  image: whoisasx/week37-scaling:3
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      requests:
+                          cpu: "100m"
+                      limits:
+                          cpu: "300m"

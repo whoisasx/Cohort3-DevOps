@@ -572,4 +572,8 @@ spec:
 
 ------------------------------------------------------------------------------------------
 
-#week 35 - Kubernetes: Namespace, Ingress, ConfigMaps, Secrets
+#week 35 - Kubernetes: Namespace,Manual Ingress, ConfigMaps, Secrets
+
+#week 36 - Kubernetes: Volumes, Ingress, Secrets
+
+#week 37 - Kubernetes: scaling, gitops & argocd
